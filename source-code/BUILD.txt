@@ -1,0 +1,8 @@
+﻿Build Instructions
+==================
+Requirements: Node.js 18+, npm 9+
+Steps:
+  npm install
+  npx wxt build --browser firefox --mv3
+Output in .output/firefox-mv3/
+For AMO: flatten subdirs, add gecko.id + data_collection_permissions to manifest.json, ZIP at root level.
