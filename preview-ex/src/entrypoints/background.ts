@@ -42,42 +42,6 @@ export default defineBackground(() => {
         return { error: error?.message ?? null };
       }
 
-      case "LOGIN_OAUTH": {
-        const redirectUrl = chrome.identity.getRedirectURL("oauth");
-        const { data, error: urlError } = await supabase.auth.signInWithOAuth({
-          provider: msg.provider,
-          options: { redirectTo: redirectUrl, skipBrowserRedirect: true },
-        });
-        if (urlError || !data?.url) {
-          return { error: urlError?.message ?? "Failed to get OAuth URL" };
-        }
-        try {
-          const responseUrl = await chrome.identity.launchWebAuthFlow({
-            url: data.url,
-            interactive: true,
-          });
-          const parsed = new URL(responseUrl);
-          const hashParams = new URLSearchParams(parsed.hash.replace(/^#/, ""));
-          const accessToken = hashParams.get("access_token");
-          const refreshToken = hashParams.get("refresh_token");
-          if (accessToken && refreshToken) {
-            await supabase.auth.setSession({
-              access_token: accessToken,
-              refresh_token: refreshToken,
-            });
-            return {};
-          }
-          const code = parsed.searchParams.get("code");
-          if (code) {
-            const { error } = await supabase.auth.exchangeCodeForSession(code);
-            return { error: error?.message ?? null };
-          }
-          return { error: "No tokens or code in redirect URL" };
-        } catch (err: any) {
-          return { error: err.message ?? "OAuth flow cancelled" };
-        }
-      }
-
       case "GET_SESSION": {
         const { data } = await supabase.auth.getSession();
         return { session: data.session };

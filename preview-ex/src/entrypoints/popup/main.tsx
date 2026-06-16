@@ -259,17 +259,6 @@ function LoginForm() {
     setLoading(false);
   }
 
-  async function handleOAuth(provider: "google" | "github") {
-    setLoading(true);
-    setError(null);
-    const res = await bg<any>({ type: "LOGIN_OAUTH", provider });
-    if (res.error) {
-      setError(res.error);
-      setErrKey(k => k + 1);
-    }
-    setLoading(false);
-  }
-
   function switchMode() {
     setMode(m => m === "login" ? "register" : "login");
     setError(null);
@@ -343,23 +332,6 @@ function LoginForm() {
           {mode === "login" ? "Sign in" : "Create account"}
         </PrimaryButton>
 
-        <div style={{ display: "flex", alignItems: "center", gap: "10px", margin: "1px 0" }}>
-          <div style={{ flex: 1, height: "1px", background: C.fold }} />
-          <span style={{ fontSize: "11px", color: C.txt3 }}>or</span>
-          <div style={{ flex: 1, height: "1px", background: C.fold }} />
-        </div>
-
-        <div style={{ display: "flex", gap: "7px" }}>
-          {(["google", "github"] as const).map(provider => (
-            <OAuthButton
-              key={provider}
-              label={provider === "google" ? "Google" : "GitHub"}
-              disabled={loading}
-              onClick={() => handleOAuth(provider)}
-            />
-          ))}
-        </div>
-
         <button
           type="button"
           onClick={switchMode}
@@ -423,42 +395,6 @@ function PrimaryButton({
       }}
     >
       {loading ? <Spinner color="#122620" size={13} /> : children}
-    </button>
-  );
-}
-
-function OAuthButton({
-  label, disabled, onClick,
-}: {
-  label: string; disabled: boolean; onClick: () => void;
-}) {
-  const [hov, setHov] = useState(false);
-  return (
-    <button
-      type="button"
-      disabled={disabled}
-      onClick={onClick}
-      onMouseEnter={() => setHov(true)}
-      onMouseLeave={() => setHov(false)}
-      style={{
-        flex: 1,
-        padding: "9px",
-        borderRadius: "9px",
-        border: `1px solid ${hov ? C.foldHi : C.fold}`,
-        background: hov ? C.raised : C.panel,
-        color: C.txt2,
-        fontSize: "12px",
-        fontWeight: 500,
-        cursor: disabled ? "not-allowed" : "pointer",
-        opacity: disabled ? 0.5 : 1,
-        transition: "all 0.15s ease",
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "center",
-        letterSpacing: "-0.01em",
-      }}
-    >
-      {label}
     </button>
   );
 }

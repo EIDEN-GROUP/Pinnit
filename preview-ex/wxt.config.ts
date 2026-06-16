@@ -7,7 +7,7 @@ export default defineConfig({
     description: "Pin comments on any webpage",
     version: "0.1.0",
     author: "Marouane",
-    permissions: ["storage", "identity", "contextMenus", "activeTab"],
+    permissions: ["storage", "contextMenus", "activeTab"],
     host_permissions: ["https://*.supabase.co/*"],
     icons: {
       "16": "icon16.png",
